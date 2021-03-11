@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 
 class DBHelper (context : Context) : SQLiteOpenHelper(context,
@@ -61,6 +62,7 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context,
 
         val cursor = db.rawQuery("SELECT * FROM $PHONELIST ORDER BY $PHONE_ID",null)
         while (cursor.moveToNext()){
+            //Log.d("Matching PhoneNumber with ",cursor.getString(cursor.getColumnIndex(PHONE_NUMBER))+" / "+phNumber1)
            if(phNumber1.equals(cursor.getString(cursor.getColumnIndex(PHONE_NUMBER)))){
                isKnownNumber = true
                return isKnownNumber

@@ -10,6 +10,7 @@ import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.Toast
 import com.hojin.ringring.util.DBHelper
+import java.util.*
 
 class CallReceiver : BroadcastReceiver(){
     private var PhoneState:String? = null
@@ -21,10 +22,14 @@ class CallReceiver : BroadcastReceiver(){
             PhoneState = state
 
         if(TelephonyManager.EXTRA_STATE_RINGING.equals(state)){
+            //context.startForegroundService(Intent(context,ScreeningService::class.java))
             val incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)  //일단은 임마가 문제
-            Log.d("@@@@@",incomingNumber.toString())
-            val phone_number = PhoneNumberUtils.formatNumber(incomingNumber)
-
+            Log.d("@@@1",incomingNumber.toString())
+            if(incomingNumber.isNullOrEmpty())
+                return
+            //val phone_number = formatNumber(PhoneNumberUtils.formatNumber(incomingNumber))
+            val phone_number = formatNumber(incomingNumber.toString())
+            Log.d("@@@12",phone_number.toString())
             /*val intent = Intent(context, WorkActivity::class.java)
             Log.d("RECEIVE NUMBER",phone_number)
             intent.putExtra("call_number",phone_number)
@@ -35,7 +40,8 @@ class CallReceiver : BroadcastReceiver(){
             if(dbHelper.isKnownNumber(phone_number)){
                 Toast.makeText(context.applicationContext,"소리모드로 변경!",Toast.LENGTH_SHORT).show()
                 audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
-            }else if(true){//5분안에 2번 같은번호로 오면
+                //Unable to start receiver com.hojin.ringring.service.CallReceiver: java.lang.SecurityException: Not allowed to change Do Not Disturb state
+            }else if(false){//5분안에 2번 같은번호로 오면
                 audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
             }
 
@@ -47,5 +53,18 @@ class CallReceiver : BroadcastReceiver(){
                 context.startService(intent)
             }
         }
+    }
+
+    fun formatNumber(number: String): String {//다른것도 어떻게할지 생각해보긴 해야됨, 노가다할수도 있긴함
+        //앞에가 010,011,016~~~이면 하나, 02,031,032~~~이면 하나 ~~~~
+        var returnstr:String
+        if(number.length == 11){
+            val numberarray = number.toCharArray()
+            Log.d("???",numberarray.toString())
+            returnstr = numberarray[0].toString()+numberarray[1].toString()+numberarray[2].toString()+"-"+numberarray[3].toString()+numberarray[4].toString()+numberarray[5].toString()+numberarray[6].toString()+"-"+numberarray[7].toString()+numberarray[8].toString()+numberarray[9].toString()+numberarray[10].toString()
+            return returnstr
+        }
+        return ""
+
     }
 }

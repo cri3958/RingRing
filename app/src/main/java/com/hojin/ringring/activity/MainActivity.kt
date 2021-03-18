@@ -1,6 +1,9 @@
 package com.hojin.ringring.activity
 
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.widget.ArrayAdapter
@@ -16,10 +19,19 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if(!notificationManager.isNotificationPolicyAccessGranted()) {
+            val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
+            startActivityForResult(intent,0)
+        }
+
         startForegroundService( Intent(this, RingService::class.java))
         btn_getfriend.setOnClickListener {
             getPhoneBook()
         }
+
+
     }
 
     fun getPhoneBook(){

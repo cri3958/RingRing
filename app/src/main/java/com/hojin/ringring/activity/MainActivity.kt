@@ -4,7 +4,10 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
+import android.media.MediaPlayer
+import android.media.RingtoneManager
 import android.os.Bundle
+import android.os.Environment
 import android.provider.ContactsContract
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -28,7 +31,18 @@ class MainActivity : AppCompatActivity() {
 
         startForegroundService( Intent(this, RingService::class.java))
         btn_getfriend.setOnClickListener {
-            getPhoneBook()
+//            val rt = RingtoneManager.getRingtone(applicationContext,RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+//            rt.play()
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES)  //핸드폰 벨소리 불러와서 알림해주고 싶은데 되려나?
+            val path = "/system/media/audio/ringtones/"
+            val mAudio = MediaPlayer()
+            mAudio.setDataSource(path)
+            mAudio.isLooping = true
+            mAudio.prepare()
+            mAudio.start();
+
+
+            //getPhoneBook()
         }
 
 

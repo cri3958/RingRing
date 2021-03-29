@@ -14,7 +14,7 @@ class ScreeningService : CallScreeningService() {
         Log.d("@@@@","123")
         if (callDetails?.callDirection == Call.Details.DIRECTION_INCOMING) {
             val phoneNumber = callDetails.handle.schemeSpecificPart
-            Toast.makeText(this, "incoming number : " + phoneNumber, Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "incoming number : " + phoneNumber, Toast.LENGTH_SHORT).show()
             Log.d("@@@","incoming number : " + phoneNumber)
         }
     }

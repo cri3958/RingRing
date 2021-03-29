@@ -22,25 +22,19 @@ class CallReceiver : BroadcastReceiver(){
             PhoneState = state
 
         if(TelephonyManager.EXTRA_STATE_RINGING.equals(state)){
-            //context.startForegroundService(Intent(context,ScreeningService::class.java))
             val incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)  //일단은 임마가 문제
             Log.d("@@@1",incomingNumber.toString())
             if(incomingNumber.isNullOrEmpty())
                 return
-            //val phone_number = formatNumber(PhoneNumberUtils.formatNumber(incomingNumber))
             val phone_number = formatNumber(incomingNumber.toString())
-            Log.d("@@@12",phone_number.toString())
-            /*val intent = Intent(context, WorkActivity::class.java)
-            Log.d("RECEIVE NUMBER",phone_number)
-            intent.putExtra("call_number",phone_number)
-            context.startForegroundService(intent)*/
+            Log.d("@@@12",phone_number)
 
             val dbHelper = DBHelper(context)
             val audioManager : AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             if(dbHelper.isKnownNumber(phone_number)){
                 Toast.makeText(context.applicationContext,"소리모드로 변경!",Toast.LENGTH_SHORT).show()
                 audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
-                //Unable to start receiver com.hojin.ringring.service.CallReceiver: java.lang.SecurityException: Not allowed to change Do Not Disturb state
+                audioManager.setStreamVolume(AudioManager.STREAM_RING,((audioManager.getStreamMaxVolume(AudioManager.STREAM_RING)*0.9).toInt()),AudioManager.FLAG_PLAY_SOUND)
             }else if(false){//5분안에 2번 같은번호로 오면
                 audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
             }
@@ -60,7 +54,6 @@ class CallReceiver : BroadcastReceiver(){
         var returnstr:String
         if(number.length == 11){
             val numberarray = number.toCharArray()
-            Log.d("???",numberarray.toString())
             returnstr = numberarray[0].toString()+numberarray[1].toString()+numberarray[2].toString()+"-"+numberarray[3].toString()+numberarray[4].toString()+numberarray[5].toString()+numberarray[6].toString()+"-"+numberarray[7].toString()+numberarray[8].toString()+numberarray[9].toString()+numberarray[10].toString()
             return returnstr
         }

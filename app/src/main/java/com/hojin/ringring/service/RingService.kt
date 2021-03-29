@@ -34,14 +34,14 @@ class RingService : Service() {
         super.onStartCommand(intent, flags, startId)
         initializeNotification(intent)
         registerRestartAlarm(true)
-        Toast.makeText(applicationContext,"working registerRestartAlarm on startCommand", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(applicationContext,"working registerRestartAlarm on startCommand", Toast.LENGTH_SHORT).show()
         return START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
         super.onDestroy()
         registerRestartAlarm(true)
-        Toast.makeText(applicationContext,"working registerRestartAlarm on Destory", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(applicationContext,"working registerRestartAlarm on Destory", Toast.LENGTH_SHORT).show()
     }
 
     fun registerRestartAlarm(isOn:Boolean){
@@ -51,9 +51,7 @@ class RingService : Service() {
 
         val alarmManager: AlarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         if(isOn){
-            alarmManager.setRepeating(
-                AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime()+100,100,sender)
+            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()+100,100,sender)
         }else{
             alarmManager.cancel(sender)
         }
@@ -82,7 +80,7 @@ class RingService : Service() {
 
         var calendar: Calendar = Calendar.getInstance()
         calendar.setTimeInMillis(System.currentTimeMillis())
-        calendar.add(Calendar.SECOND,1)
+        calendar.add(Calendar.SECOND,5)
 
         val intent: Intent = Intent(this, CallReceiver::class.java)
         val sender: PendingIntent = PendingIntent.getBroadcast(this,0,intent,0)

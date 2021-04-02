@@ -3,11 +3,11 @@
     package="com.hojin.ringring">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />  //전화번호부
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> //기본벨소리
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />    //백그라운드
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />    //핸드폰 재부팅
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
 

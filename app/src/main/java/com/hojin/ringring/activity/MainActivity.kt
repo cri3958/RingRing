@@ -29,20 +29,12 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent,0)
         }
 
+        val String = "ABCD"
+        val temp = String.split("")
+        btn_getfriend.setText(temp[2])
         startForegroundService( Intent(this, RingService::class.java))
         btn_getfriend.setOnClickListener {
-//            val rt = RingtoneManager.getRingtone(applicationContext,RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-//            rt.play()
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES)  //핸드폰 벨소리 불러와서 알림해주고 싶은데 되려나?
-            val path = "/system/media/audio/ringtones/"
-            val mAudio = MediaPlayer()
-            mAudio.setDataSource(path)
-            mAudio.isLooping = true
-            mAudio.prepare()
-            mAudio.start();
-
-
-            //getPhoneBook()
+            getPhoneBook()
         }
 
 

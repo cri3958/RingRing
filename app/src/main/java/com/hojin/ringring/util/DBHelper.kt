@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import com.hojin.ringring.model.Phone
 
 
 class DBHelper (context : Context) : SQLiteOpenHelper(context,
@@ -72,5 +73,22 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context,
         db.close()
 
         return isKnownNumber
+    }
+
+    fun getPhoneBookLIST(): ArrayList<Phone> {
+        val db = this.writableDatabase
+        val phonebooklist = ArrayList<Phone>()
+        var phone:Phone
+        val cursor = db.rawQuery("SELECT * FROM $PHONELIST ORDER BY $PHONE_ID",null)
+        while(cursor.moveToNext()){
+            phone = Phone()
+            phone.setId(cursor.getInt(cursor.getColumnIndex(PHONE_ID)))
+            phone.setName(cursor.getString(cursor.getColumnIndex(PHONE_NAME)))
+            phone.setNumber(cursor.getString(cursor.getColumnIndex(PHONE_NUMBER)))
+            phonebooklist.add(phone)
+        }
+        cursor.close()
+        db.close()
+        return phonebooklist
     }
 }

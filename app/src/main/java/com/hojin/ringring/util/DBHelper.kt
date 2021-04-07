@@ -75,9 +75,9 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context,
         return isKnownNumber
     }
 
-    fun getPhoneBookLIST(): ArrayList<Phone> {
-        val db = this.writableDatabase
-        val phonebooklist = ArrayList<Phone>()
+    fun getPhoneBookLIST(): MutableList<Phone> {
+        val db = this.readableDatabase
+        val phonebooklist = mutableListOf<Phone>()
         var phone:Phone
         val cursor = db.rawQuery("SELECT * FROM $PHONELIST ORDER BY $PHONE_ID",null)
         while(cursor.moveToNext()){

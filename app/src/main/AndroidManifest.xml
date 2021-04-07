@@ -20,14 +20,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".PhoneBook.PhoneBookActivity"></activity>
 
-        <service
-            android:name=".service.ScreeningService"
-            android:permission="android.permission.BIND_SCREENING_SERVICE">
-            <intent-filter>
-                <action android:name="android.telecom.CallScreeningService" />
-            </intent-filter>
-        </service>
-
         <activity android:name=".activity.WorkActivity" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>

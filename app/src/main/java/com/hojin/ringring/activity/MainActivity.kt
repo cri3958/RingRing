@@ -11,6 +11,7 @@ import android.os.Environment
 import android.provider.ContactsContract
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import com.hojin.ringring.PhoneBook.PhoneBookActivity
 import com.hojin.ringring.R
 import com.hojin.ringring.service.RingService
 import com.hojin.ringring.util.DBHelper
@@ -29,38 +30,11 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent,0)
         }
 
-        val String = "ABCD"
-        val temp = String.split("")
-        btn_getfriend.setText(temp[2])
         startForegroundService( Intent(this, RingService::class.java))
         btn_getfriend.setOnClickListener {
-            getPhoneBook()
+            val intent = Intent(this,PhoneBookActivity::class.java)
+            startActivity(intent)
         }
-
-
-    }
-
-    fun getPhoneBook(){
-        val dbHelper: DBHelper = DBHelper(this)
-        dbHelper.deletePhoneList()
-
-        val contacts:ArrayList<String> = ArrayList()
-        var count:Int = 1
-
-        val c = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,null,null,null)
-        while(c!!.moveToNext()){
-            val contactName = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-            val phNumber = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-
-            contacts.add(count.toString() + ". "+contactName + " : "+phNumber)
-            count++
-
-            dbHelper.insertPhoneLIST(contactName,phNumber)
-        }
-        c.close()
-
-        var adapter = ArrayAdapter<String>(applicationContext, R.layout.text,contacts)
-        main_listview.adapter = adapter
 
     }
 }

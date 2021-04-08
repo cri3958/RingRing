@@ -41,8 +41,9 @@ class PhoneBookActivity : AppCompatActivity() {
         while(c!!.moveToNext()){
             val contactName = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
             val phNumber = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-
-            dbHelper.insertPhoneLIST(contactName,phNumber)
+            if(!dbHelper.isKnownNumber(phNumber)){
+                dbHelper.insertPhoneLIST(contactName,phNumber)
+            }
         }
         c.close()
     }

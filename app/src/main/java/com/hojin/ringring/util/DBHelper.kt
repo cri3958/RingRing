@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 import com.hojin.ringring.model.Phone
 
 
@@ -58,7 +57,7 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context,
     }
 
     fun isKnownNumber(phNumber1:String):Boolean{
-        val db = this.writableDatabase //readable로 바꾸어도 되는가???
+        val db = this.readableDatabase //readable로 바꾸어도 되는가???
         var isKnownNumber = false
 
         val cursor = db.rawQuery("SELECT * FROM $PHONELIST ORDER BY $PHONE_ID",null)
@@ -79,13 +78,15 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context,
         val db = this.readableDatabase
         val phonebooklist = mutableListOf<Phone>()
         var phone:Phone
-        val cursor = db.rawQuery("SELECT * FROM $PHONELIST ORDER BY $PHONE_ID",null)
+        var num = 1
+        val cursor = db.rawQuery("SELECT * FROM $PHONELIST ORDER BY $PHONE_NAME",null)
         while(cursor.moveToNext()){
             phone = Phone()
-            phone.setId(cursor.getInt(cursor.getColumnIndex(PHONE_ID)))
+            phone.setId(num)
             phone.setName(cursor.getString(cursor.getColumnIndex(PHONE_NAME)))
             phone.setNumber(cursor.getString(cursor.getColumnIndex(PHONE_NUMBER)))
             phonebooklist.add(phone)
+            num++
         }
         cursor.close()
         db.close()

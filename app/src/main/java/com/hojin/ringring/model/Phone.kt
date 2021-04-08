@@ -13,7 +13,7 @@ class Phone {
     }
 
     fun getId():Int { return id}
-    fun setId(id:Int){this.id =id}
+    fun setId(id: Int){this.id =id}
 
     fun getName(): String? { return phName}
     fun setName(text:String?){this.phName=text}

@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.ContactsContract
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.hojin.ringring.PhoneBook.PhoneBookActivity
 import com.hojin.ringring.R
@@ -30,11 +31,19 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent,0)
         }
 
-        startForegroundService( Intent(this, RingService::class.java))
         btn_getfriend.setOnClickListener {
             val intent = Intent(this,PhoneBookActivity::class.java)
             startActivity(intent)
         }
 
+        switch_service.setOnCheckedChangeListener { compoundButton, isChecked ->
+            if(isChecked){
+                startForegroundService( Intent(this, RingService::class.java))
+                Toast.makeText(applicationContext,"서비스 시작",Toast.LENGTH_SHORT).show()
+            }else{
+                stopService(Intent(this,RingService::class.java))
+                Toast.makeText(applicationContext,"서비스 종료",Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

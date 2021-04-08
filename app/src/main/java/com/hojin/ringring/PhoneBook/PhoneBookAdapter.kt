@@ -26,12 +26,14 @@ class PhoneBookAdapter : RecyclerView. Adapter<RecyclerView.ViewHolder>(){
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val phone = listData.get(position)
+        holder.itemView.phone_dbnum.text = phone.getId().toString()
         holder.itemView.phone_name.text = phone.getName()
         holder.itemView.phone_number.text = phone.getNumber()
     }
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun setMemo(phone:Phone){
+            itemView.phone_dbnum.text = phone.getId().toString()
             itemView.phone_name.text = phone.getName()
             itemView.phone_number.text = phone.getNumber()
         }

@@ -51,7 +51,7 @@ class CallReceiver : BroadcastReceiver(){
                     val timedata = temp[3].toInt() + temp[2].toInt()*60 + temp[1].toInt()*60*12 + temp[0].toInt()*60*12*30
 
                     val inFs: FileInputStream = context.openFileInput(fileName)
-                    val txt = ByteArray(500)
+                    val txt = ByteArray(100)
                     inFs.read(txt)
                     val fdata = String(txt).trim().split("@")
 

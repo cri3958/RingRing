@@ -56,6 +56,13 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context,
         db.close()
     }
 
+    fun deletePhoneItem(phName:String){
+        val db = this.writableDatabase
+        val delete = "delete from $DB_NAME where $PHONE_NAME = $phName"
+        db.execSQL(delete)
+        db.close()
+    }
+
     fun isKnownNumber(phNumber1:String):Boolean{
         val db = this.readableDatabase //readable로 바꾸어도 되는가???
         var isKnownNumber = false

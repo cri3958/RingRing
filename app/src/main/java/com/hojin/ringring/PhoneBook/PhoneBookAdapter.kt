@@ -1,7 +1,9 @@
 package com.hojin.ringring.PhoneBook
 
+import android.app.AlertDialog
 import android.content.Context
 import android.system.Os.bind
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,11 +33,5 @@ class PhoneBookAdapter : RecyclerView. Adapter<RecyclerView.ViewHolder>(){
         holder.itemView.phone_number.text = phone.getNumber()
     }
 
-    class Holder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        fun setMemo(phone:Phone){
-            itemView.phone_dbnum.text = phone.getId().toString()
-            itemView.phone_name.text = phone.getName()
-            itemView.phone_number.text = phone.getNumber()
-        }
-    }
+    class Holder(itemView: View) : RecyclerView.ViewHolder(itemView){}
 }

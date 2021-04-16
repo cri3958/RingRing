@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import com.hojin.ringring.model.Phone
 
 
@@ -57,9 +58,9 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context,
     }
 
     fun deletePhoneItem(phName:String){
+        Log.d("delete",phName)
         val db = this.writableDatabase
-        val delete = "delete from $DB_NAME where $PHONE_NAME = $phName"
-        db.execSQL(delete)
+        db.delete(PHONELIST, PHONE_NAME+" = ? ", arrayOf(phName))
         db.close()
     }
 

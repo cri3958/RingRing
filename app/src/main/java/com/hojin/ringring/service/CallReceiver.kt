@@ -112,6 +112,5 @@ class CallReceiver : BroadcastReceiver(){
             returnstr = numberarray[1]+numberarray[2]+"-"+numberarray[3]+numberarray[4]+numberarray[5]+"-"+numberarray[6]+numberarray[7]+numberarray[8]+numberarray[9]
         }
         return returnstr
-
     }
 }

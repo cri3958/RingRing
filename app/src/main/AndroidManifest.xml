@@ -18,8 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PhoneBook.PhoneBookActivity"></activity>
-
+        <activity
+            android:name=".activity.RestartserviceActivity"
+            android:noHistory="true">
+        </activity>
+        <activity android:name=".PhoneBook.PhoneBookActivity" />
         <activity android:name=".activity.WorkActivity" />
         <activity android:name=".activity.MainActivity">
             <intent-filter>
@@ -40,12 +43,23 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 
         <service android:name=".service.RingService" />
+        <receiver
+            android:name=".service.AutoStartReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

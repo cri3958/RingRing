@@ -31,7 +31,7 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
         setAdapter(context)
 
         btn_resetDB.setOnClickListener {
-            callPhoneBook()
+            //callPhoneBook()
             setAdapter(context)
             Toast.makeText(applicationContext,"전화번호부 불러오기 끝",Toast.LENGTH_SHORT).show()
         }

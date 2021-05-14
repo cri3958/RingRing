@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(context, time.toString() + "분동안 서비스 대기", Toast.LENGTH_SHORT).show()
             }else{
                 time = Integer.parseInt(view.timer_input.text.toString())
-                Toast.makeText(context, time.toString() + "분동안 서비스 대기", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, time.toString() + "분동안 서비스 대기", Toast.LENGTH_SHORT).show()/123
             }
         }
         builder.setNegativeButton("취소",null)

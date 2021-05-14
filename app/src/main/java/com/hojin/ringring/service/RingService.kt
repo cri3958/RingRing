@@ -13,7 +13,7 @@ import com.hojin.ringring.R
 import java.util.*
 
 class RingService : Service() {
-    private var mReceiver: CallReceiver? = null
+    private var mReceiver: ScreenReceiver? = null
 
 
     val channelId = "com.suw.lockscreen"
@@ -24,27 +24,28 @@ class RingService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        mReceiver = CallReceiver()
+        mReceiver = ScreenReceiver()
         val filter = IntentFilter(Intent.ACTION_SCREEN_OFF)
         registerReceiver(mReceiver, filter)
-
+        Toast.makeText(applicationContext,"RingService onCreate", Toast.LENGTH_SHORT).show()
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         initializeNotification(intent)
         registerRestartAlarm(true)
-        //Toast.makeText(applicationContext,"working registerRestartAlarm on startCommand", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(applicationContext,"RingService onStartCommand", Toast.LENGTH_SHORT).show()
         return START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
         super.onDestroy()
         registerRestartAlarm(true)
-        //Toast.makeText(applicationContext,"working registerRestartAlarm on Destory", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(applicationContext,"RingService onDestroy", Toast.LENGTH_SHORT).show()
     }
 
     fun registerRestartAlarm(isOn:Boolean){
+        //Toast.makeText(applicationContext,"RingService registerRestartAlarm", Toast.LENGTH_SHORT).show()
         val intent: Intent = Intent(this,
             RestartReceiver::class.java)
         val sender: PendingIntent = PendingIntent.getBroadcast(this,0,intent,0)
@@ -57,6 +58,7 @@ class RingService : Service() {
         }
     }
     fun initializeNotification(intent: Intent){
+        //Toast.makeText(applicationContext,"RingService initializeNotification", Toast.LENGTH_SHORT).show()
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this,0,intent,0)
         if (Build.VERSION.SDK_INT >= 26) {
             val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
@@ -76,6 +78,7 @@ class RingService : Service() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
+        Toast.makeText(applicationContext,"RingService onTaskRemoved", Toast.LENGTH_SHORT).show()
         super.onTaskRemoved(rootIntent)
 
         var calendar: Calendar = Calendar.getInstance()

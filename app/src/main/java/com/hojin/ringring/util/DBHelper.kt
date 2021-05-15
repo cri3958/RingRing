@@ -5,38 +5,48 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import android.widget.Toast
 import com.hojin.ringring.model.Phone
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.*
 
 
-class DBHelper (context : Context) : SQLiteOpenHelper(context,
-    DB_NAME, null,
-    DB_VERSION
-) {
-
+class DBHelper (context : Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     companion object{
-        private val DB_VERSION = 1
+        private val DB_VERSION = 2
         private val DB_NAME = "RingRing.db"
 
         private val PHONELIST = "phone"
-
         private val PHONE_ID = "id"
         private val PHONE_NAME = "name"
         private val PHONE_NUMBER = "number"
+
+        private val TIMER = "timer"
+        private val RESTARTTIME = "restarttime"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val CREATE_TABLE_QUERY =
+        val CREATE_TABLE_PHONE =
             ("CREATE TABLE " + PHONELIST + "("
                     + PHONE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + PHONE_NAME + " TEXT,"
-                    + PHONE_NUMBER + " TEXT"+ ")")
-        db!!.execSQL(CREATE_TABLE_QUERY)
+                    + PHONE_NUMBER + " TEXT)")
+
+        val CREATE_TABLE_TIMER =
+            ("CREATE TABLE "+TIMER + "("
+                    + RESTARTTIME +" Text)")
+        db!!.execSQL(CREATE_TABLE_PHONE)
+        db!!.execSQL(CREATE_TABLE_TIMER)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newViersion: Int) {
         when (oldVersion) {
             1 -> {
                 db!!.execSQL("DROP TABLE IF EXISTS $PHONELIST")
+            }
+            2->{
+                db!!.execSQL("DROP TABLE IF EXISTS $TIMER")
             }
         }
         onCreate(db)
@@ -51,14 +61,13 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context,
         db.close()
     }
 
-    fun deletePhoneList() { //sql지우기
+    fun deletePhoneList() {
         val db = this.writableDatabase
         db.delete(PHONELIST, null,null)
         db.close()
     }
 
     fun deletePhoneItem(phName:String){
-        Log.d("delete",phName)
         val db = this.writableDatabase
         db.delete(PHONELIST, PHONE_NAME+" = ? ", arrayOf(phName))
         db.close()
@@ -99,5 +108,35 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context,
         cursor.close()
         db.close()
         return phonebooklist
+    }
+
+    fun SettingTimer(time:Int){
+        val db = this.writableDatabase
+
+        db.delete(TIMER,null,null)
+
+        val temptime = System.currentTimeMillis() + (time*60000)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm")
+        val restarttime = dateFormat.format(Date(temptime))
+
+        val contentValues = ContentValues()
+        contentValues.put(RESTARTTIME, restarttime)
+        db.insert(TIMER, null, contentValues)
+        db.close()
+
+    }
+
+    fun CheckingTimer():Boolean{
+        val db = this.readableDatabase
+        val temptime = System.currentTimeMillis()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm")
+        val restarttime = dateFormat.format(Date(temptime))
+
+        val cursor = db.rawQuery("SELECT * FROM $TIMER",null)
+        cursor.moveToFirst()
+        if(restarttime>cursor.getString(cursor.getColumnIndex(RESTARTTIME))){//지금이 재시작 시간보다 후 일때(확인해봐야함)
+            return true
+        }
+        return false
     }
 }

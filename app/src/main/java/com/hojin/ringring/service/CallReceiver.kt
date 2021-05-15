@@ -88,10 +88,16 @@ class CallReceiver : BroadcastReceiver(){
     }
 
     fun changetoRingmode(context: Context){
-        val audioManager : AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        Toast.makeText(context.applicationContext,"소리모드로 변경!",Toast.LENGTH_SHORT).show()
-        audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
-        audioManager.setStreamVolume(AudioManager.STREAM_RING,((audioManager.getStreamMaxVolume(AudioManager.STREAM_RING)*0.9).toInt()),AudioManager.FLAG_PLAY_SOUND)
+        val dbHelper = DBHelper(context)
+        if(dbHelper.CheckingTimer()) {
+            val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            Toast.makeText(context.applicationContext, "소리모드로 변경!", Toast.LENGTH_SHORT).show()
+            audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
+            audioManager.setStreamVolume(AudioManager.STREAM_RING, ((audioManager.getStreamMaxVolume(AudioManager.STREAM_RING) * 0.9).toInt()), AudioManager.FLAG_PLAY_SOUND
+            )
+        }else{
+            Toast.makeText(context.applicationContext, "서비스 대기시간", Toast.LENGTH_SHORT).show()
+        }
     }
 
     //함수 바꾸곤 미확인

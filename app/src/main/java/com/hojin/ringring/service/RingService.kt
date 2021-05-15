@@ -27,7 +27,7 @@ class RingService : Service() {
         mReceiver = ScreenReceiver()
         val filter = IntentFilter(Intent.ACTION_SCREEN_OFF)
         registerReceiver(mReceiver, filter)
-        Toast.makeText(applicationContext,"RingService onCreate", Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext,"RingRing 서비스 시작", Toast.LENGTH_SHORT).show()
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -78,7 +78,7 @@ class RingService : Service() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        Toast.makeText(applicationContext,"RingService onTaskRemoved", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(applicationContext,"RingService onTaskRemoved", Toast.LENGTH_SHORT).show()
         super.onTaskRemoved(rootIntent)
 
         var calendar: Calendar = Calendar.getInstance()

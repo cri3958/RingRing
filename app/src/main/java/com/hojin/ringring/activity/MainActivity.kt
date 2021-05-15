@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.hojin.ringring.PhoneBook.PhoneBookActivity
 import com.hojin.ringring.R
 import com.hojin.ringring.service.RingService
+import com.hojin.ringring.util.DBHelper
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_timer.*
 import kotlinx.android.synthetic.main.dialog_timer.view.*
@@ -22,6 +23,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.nio.charset.Charset
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +38,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
             startActivityForResult(intent,0)
         }
+
 
         val file = File("/data/data/com.hojin.ringring/files/"+fileName)
         if(!file.exists()){//파일이 없으면
@@ -56,11 +60,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        btn_getfriend.setOnClickListener {
-            val intent = Intent(this,PhoneBookActivity::class.java)
-            startActivity(intent)
-        }
-
         switch_service.setOnCheckedChangeListener { compoundButton, isChecked ->
             val outFs: FileOutputStream = openFileOutput(fileName, Context.MODE_PRIVATE)
             var str = ""
@@ -80,6 +79,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_timer.setOnClickListener { dialog(this) }
+
+        btn_getfriend.setOnClickListener {
+            val intent = Intent(this,PhoneBookActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     fun dialog(context: Context){
@@ -111,19 +115,17 @@ class MainActivity : AppCompatActivity() {
         builder.setTitle("서비스 잠시 멈추기")
         builder.setView(view)
         builder.setPositiveButton("확인"){dialog,which ->
-            if(view.timer_input.text.isEmpty()) {//기타가 아닐경우
-                Toast.makeText(context, time.toString() + "분동안 서비스 대기", Toast.LENGTH_SHORT).show()
-            }else{
+            if(!view.timer_input.text.isEmpty()) {//기타가 아닐경우
                 time = Integer.parseInt(view.timer_input.text.toString())
-                Toast.makeText(context, time.toString() + "분동안 서비스 대기", Toast.LENGTH_SHORT).show()/123
             }
+            Toast.makeText(context, time.toString() + "분동안 서비스 대기", Toast.LENGTH_SHORT).show()//이 시간을 btn_time에다가 대체해주면 좋을것도 같은..?
+            val dbHelper = DBHelper(this)
+            dbHelper.SettingTimer(time)
         }
         builder.setNegativeButton("취소",null)
         builder.setCancelable(false)
         builder.create()
 
         builder.show()
-
     }
-
 }

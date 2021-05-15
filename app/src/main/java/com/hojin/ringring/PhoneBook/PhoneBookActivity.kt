@@ -2,6 +2,7 @@ package com.hojin.ringring.PhoneBook
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.hojin.ringring.R
+import com.hojin.ringring.activity.MainActivity
 import com.hojin.ringring.util.DBHelper
 import kotlinx.android.synthetic.main.activity_phone_book.*
 import kotlinx.android.synthetic.main.floating_dialog.*
@@ -30,8 +32,12 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
 
         setAdapter(context)
 
+        btn_back.setOnClickListener {
+            finish()
+        }
+
         btn_resetDB.setOnClickListener {
-            //callPhoneBook()
+            callPhoneBook()
             setAdapter(context)
             Toast.makeText(applicationContext,"전화번호부 불러오기 끝",Toast.LENGTH_SHORT).show()
         }
@@ -125,7 +131,6 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
     }
 
     fun formatNumber(number: String): String {  //https://ko.wikipedia.org/wiki/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD%EC%9D%98_%EC%A0%84%ED%99%94%EB%B2%88%ED%98%B8_%EC%B2%B4%EA%B3%84
-        //앞에가 010,011,016~~~이면 하나, 02,031,032~~~이면 하나 ~~~~ >> 이외는 번호취급 안함... 이정도면 잡겠지
         var returnstr:String = "error"
         val numberarray = number.split("")
 

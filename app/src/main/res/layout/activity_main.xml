@@ -74,7 +74,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="20dp"
             android:padding="10dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/switch_service"
@@ -87,6 +87,7 @@
                 android:layout_gravity="center"/>
 
             <TextView
+                android:id="@+id/btn_timer_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -95,6 +96,7 @@
                 android:textSize="20dp"
                 android:textStyle="bold"
                 android:layout_marginStart="5dp"
+                android:gravity="center"
                 android:text="서비스 잠시 멈추기" />
         </LinearLayout>
 

@@ -5,10 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
-import android.telephony.PhoneNumberUtils
 import android.telephony.TelephonyManager
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import com.hojin.ringring.util.DBHelper
 import java.io.File
@@ -16,7 +14,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 class CallReceiver : BroadcastReceiver(){
     private var PhoneState:String? = null
@@ -30,20 +27,24 @@ class CallReceiver : BroadcastReceiver(){
 
         if(TelephonyManager.EXTRA_STATE_RINGING.equals(state)){
             val incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)  //일단은 임마가 문제
-            Log.d("@@@1",incomingNumber.toString())
             if(incomingNumber.isNullOrEmpty())
                 return
             val phone_number = formatNumber(incomingNumber.toString())
-            Toast.makeText(context.applicationContext,"바뀐 유형 : $phone_number",Toast.LENGTH_SHORT).show()
-            Log.d("@@@12",phone_number)
 
             val dbHelper = DBHelper(context)
 
             if(dbHelper.isKnownNumber(phone_number)){
                 changetoRingmode(context)
-            }else if(false){//모르는 번호여도 5분내로 2번오면 소리로    >>>테스트는 아직
+            }else {//모르는 번호여도 5분내로 2번오면 소리로    >>>테스트는 아직
+                if(dbHelper.compareLatestCall(phone_number)){
+                    Log.d("CallReceiver","모르지만 5분내로 2번 전화옴")
+                    changetoRingmode(context)
+                }
+                else
+                    dbHelper.SettingLatestCall(phone_number)
 
-                val file = File("/data/data/com.hojin.ringring/files/"+fileName)
+
+                /*val file = File("/data/data/com.hojin.ringring/files/"+fileName)
                 if(file.exists()){//파일이 있으면 같은값인지 확인하고 소리모드로
                     val time = LocalDateTime.now()
                     val datetime = time.format(DateTimeFormatter.ofPattern("MM@dd@HH@mm"))
@@ -74,7 +75,7 @@ class CallReceiver : BroadcastReceiver(){
                     val str: String = "$timedata@$phone_number" //시간을 분으로한거 @ 폰번호
                     outFs.write(str.toByteArray())
                     outFs.close()
-                }
+                }*/
             }
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -89,20 +90,20 @@ class CallReceiver : BroadcastReceiver(){
 
     fun changetoRingmode(context: Context){
         val dbHelper = DBHelper(context)
-        if(dbHelper.CheckingTimer()) {
+        val status = dbHelper.isWaitingService()
+        Log.d("CallReceiver status",status.toString())
+        if(!status) {  //서비스 중이 아니다
             val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             Toast.makeText(context.applicationContext, "소리모드로 변경!", Toast.LENGTH_SHORT).show()
             audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
-            audioManager.setStreamVolume(AudioManager.STREAM_RING, ((audioManager.getStreamMaxVolume(AudioManager.STREAM_RING) * 0.9).toInt()), AudioManager.FLAG_PLAY_SOUND
-            )
+            audioManager.setStreamVolume(AudioManager.STREAM_RING, ((audioManager.getStreamMaxVolume(AudioManager.STREAM_RING) * 0.9).toInt()), AudioManager.FLAG_PLAY_SOUND)
         }else{
             Toast.makeText(context.applicationContext, "서비스 대기시간", Toast.LENGTH_SHORT).show()
         }
     }
 
-    //함수 바꾸곤 미확인
+
     fun formatNumber(number: String): String {  //https://ko.wikipedia.org/wiki/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD%EC%9D%98_%EC%A0%84%ED%99%94%EB%B2%88%ED%98%B8_%EC%B2%B4%EA%B3%84
-       //앞에가 010,011,016~~~이면 하나, 02,031,032~~~이면 하나 ~~~~ >> 이외는 번호취급 안함... 이정도면 잡겠지
         var returnstr:String = "error"
         val numberarray = number.split("")
 

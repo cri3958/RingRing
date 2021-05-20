@@ -151,7 +151,7 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
         db.close()
     }
 
-    fun isWaitingService():Boolean{ //얘가 말썽임, 맨처음 db에 아무것도 없을때 작동이 고장나버림
+    fun isWaitingService():Boolean{ //time1>time2이면, time1은 time2보다 미래이다.
         val db = this.readableDatabase
         val temptime = System.currentTimeMillis()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm")
@@ -159,15 +159,15 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
 
         val cursor = db.rawQuery("SELECT * FROM $TIMER",null)
         while(cursor.moveToNext()) {
-            if (now < cursor.getString(cursor.getColumnIndex(RESTARTTIME))) {//지금시간이 서비스 재시작 시간보다 후 일때
+            if (now < cursor.getString(cursor.getColumnIndex(RESTARTTIME))) {//지금 시간이, 서비스 재시작 시간보다 과거인가?
                 Log.d("@@@", now)
                 Log.d("@@@", cursor.getString(cursor.getColumnIndex(RESTARTTIME)))
                 Log.d("isWaitingService","return false")
-                return false
+                return true//지금시간이 서비스 재시작 시간보다 과거이다.
             }
         }
         Log.d("isWaitingService","return true")
-        return true
+        return false//지금시간이 서비스 재시작 시간보다 미래이다.
     }
 
     fun getTimer():String{

@@ -9,15 +9,9 @@ import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.Toast
 import com.hojin.ringring.util.DBHelper
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class CallReceiver : BroadcastReceiver(){
     private var PhoneState:String? = null
-    val fileName:String = "recently_call.txt"
     override fun onReceive(context: Context, intent: Intent) {
         val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
         if(state.equals(PhoneState))
@@ -42,40 +36,6 @@ class CallReceiver : BroadcastReceiver(){
                 }
                 else
                     dbHelper.SettingLatestCall(phone_number)
-
-
-                /*val file = File("/data/data/com.hojin.ringring/files/"+fileName)
-                if(file.exists()){//파일이 있으면 같은값인지 확인하고 소리모드로
-                    val time = LocalDateTime.now()
-                    val datetime = time.format(DateTimeFormatter.ofPattern("MM@dd@HH@mm"))
-                    val temp = datetime.split("@")
-                    val timedata = temp[3].toInt() + temp[2].toInt()*60 + temp[1].toInt()*60*12 + temp[0].toInt()*60*12*30
-
-                    val inFs: FileInputStream = context.openFileInput(fileName)
-                    val txt = ByteArray(100)
-                    inFs.read(txt)
-                    val fdata = String(txt).trim().split("@")
-
-                    if(fdata[1].equals(phone_number) && fdata[0].toInt()-timedata<=5){ //새로온 전화가 최근 전화와 같은 번호이면서 최근 전화와 5분 이내로 차이나는지 확인
-                        changetoRingmode(context)
-                    } else{
-                        val outFs:FileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)
-                        val str: String = "$timedata@$phone_number" //시간을 분으로한거 @ 폰번호
-                        outFs.write(str.toByteArray())
-                        outFs.close()
-                    }
-                    inFs.close()
-                }else{//파일이 없으면 지금온 전화와 시간 저장하기
-                    val time = LocalDateTime.now()
-                    val datetime = time.format(DateTimeFormatter.ofPattern("MM@dd@HH@mm"))
-                    val temp = datetime.split("@")
-                    val timedata = temp[3].toInt() + temp[2].toInt()*60 + temp[1].toInt()*60*12 + temp[0].toInt()*60*12*30
-
-                    val outFs:FileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)
-                    val str: String = "$timedata@$phone_number" //시간을 분으로한거 @ 폰번호
-                    outFs.write(str.toByteArray())
-                    outFs.close()
-                }*/
             }
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){

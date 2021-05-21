@@ -38,47 +38,20 @@ class MainActivity : AppCompatActivity() {
     )
     var rejectedPermissionList = ArrayList<String>()
 
-    override fun onResume() {
-        super.onResume()
-        //여기서도 퍼미션 검사해야됨
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        //여기서도 퍼미션 검사해야됨
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         if (!checkPermissions()) {//요청할 것이 있으면
-            val builder1 = AlertDialog.Builder(this)
-            builder1.setTitle("어플 동작을 위한 권한요청")
-            builder1.setMessage("수락을 해주셔야지 어플이 동작해요...")
-            val listner1 = DialogInterface.OnClickListener { _, p1 ->
-                when (p1) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        requestPermissions()
-                    }
-                    DialogInterface.BUTTON_NEGATIVE -> {
-                        Toast.makeText(applicationContext, "그럼 어쩔수없죠... Bye....", Toast.LENGTH_LONG).show()
-                        finish()
-                    }
-                }
-            }
-            builder1.setPositiveButton("좋아요", listner1)
-            builder1.setNegativeButton("싫어요", listner1)
-            builder1.show()
+            requestPermissions()
         }
 
         //방해금지모드 빼곤 다 획득!
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager//방해금지모드 퍼미션
         if (!notificationManager.isNotificationPolicyAccessGranted) {
             val builder2 = AlertDialog.Builder(this)
-            builder2.setTitle("이 친구도...")
-            builder2.setMessage(resources.getString(R.string.app_name) + "의 방해 금지 모드도 허가해주세용...")
-            val listner2 = DialogInterface.OnClickListener { _, p1 ->
+            builder2.setMessage("어플 동작을 위한 권한요청")
+            val listner = DialogInterface.OnClickListener { _, p1 ->
                 when (p1) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
@@ -90,11 +63,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            builder2.setPositiveButton("좋아요", listner2)
-            builder2.setNegativeButton("싫어요", listner2)
+            builder2.setPositiveButton("좋아요", listner)
+            builder2.setNegativeButton("싫어요", listner)
             builder2.show()
         }
-
 
         //권한 전부다 획득!
         val dbHelper = DBHelper(this)
@@ -110,12 +82,12 @@ class MainActivity : AppCompatActivity() {
         switch_service.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {//ON
                 startForegroundService(Intent(this, RingService::class.java))
-                Toast.makeText(applicationContext, "서비스 시작", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(applicationContext, "서비스 시작", Toast.LENGTH_SHORT).show()
                 dbHelper.SettingStatus("ON")
                 btn_timer.visibility = View.VISIBLE
             } else {//OFF
                 stopService(Intent(this, RingService::class.java))
-                Toast.makeText(applicationContext, "서비스 종료", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(applicationContext, "서비스 종료", Toast.LENGTH_SHORT).show()
                 dbHelper.SettingStatus("OFF")
                 btn_timer.visibility = View.GONE
             }
@@ -199,8 +171,6 @@ class MainActivity : AppCompatActivity() {
         //필요한 퍼미션들을 하나씩 끄집어내서 현재 권한을 받았는지 체크
         for (permission in requiredPermissions) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                //만약 권한이 없다면 rejectedPermissionList에 추가
-                Log.d("PERMISsion",permission)
                 rejectedPermissionList.add(permission)
                 isClear = false
             }
@@ -231,6 +201,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

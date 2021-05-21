@@ -1,14 +1,8 @@
 package com.hojin.ringring.PhoneBook
 
-import android.app.AlertDialog
-import android.content.Context
-import android.system.Os.bind
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.hojin.ringring.R
 import com.hojin.ringring.model.Phone
@@ -31,6 +25,13 @@ class PhoneBookAdapter : RecyclerView. Adapter<RecyclerView.ViewHolder>(){
         holder.itemView.phone_dbnum.text = phone.getId().toString()
         holder.itemView.phone_name.text = phone.getName()
         holder.itemView.phone_number.text = phone.getNumber()
+        holder.itemView.phone_checkbox.setOnClickListener {
+            if(holder.itemView.phone_checkbox.isChecked){
+                //어딘가에저장
+            }else{
+                //저장해제
+            }
+        }//>>이걸 어떻게 저렇게 PhoneBookActivity로 보내야됨
     }
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView){}

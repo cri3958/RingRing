@@ -19,8 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".PhoneBook.PhoneBookActivity" />
-        <activity android:name=".activity.MainActivity">
+        <activity
+            android:name=".PhoneBook.PhoneBookActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +32,8 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".service.CallReceiver">
+        <receiver
+            android:name=".service.CallReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
@@ -39,7 +44,6 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

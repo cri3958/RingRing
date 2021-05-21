@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.hojin.ringring.R
 import com.hojin.ringring.util.DBHelper
 import kotlinx.android.synthetic.main.activity_phone_book.*
+import kotlinx.android.synthetic.main.activity_phone_book.view.*
 import kotlinx.android.synthetic.main.floating_dialog.view.*
 import kotlinx.android.synthetic.main.item_phonebooklist.view.*
 
@@ -45,21 +46,19 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
 
             var v1 = layoutInflater.inflate(R.layout.floating_dialog,null)
             builder.setView(v1)
-            var listener = object : DialogInterface.OnClickListener {
-                override fun onClick(p0: DialogInterface?, p1: Int) {
-                    when(p1){
-                        DialogInterface.BUTTON_POSITIVE -> {
-                            val newname : String = v1.dialog_name.text.toString()
-                            val newnumber : String = v1.dialog_number.text.toString()
-                            val changenumber = formatNumber(newnumber)
+            var listener = DialogInterface.OnClickListener { _, p1 ->
+                when(p1){
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        val newname : String = v1.dialog_name.text.toString()
+                        val newnumber : String = v1.dialog_number.text.toString()
+                        val changenumber = formatNumber(newnumber)
 
-                            Log.d("@@@@",newname+" / "+changenumber)
-                            dbHelper.insertPhoneLIST(newname,changenumber)
+                        Log.d("@@@@",newname+" / "+changenumber)
+                        dbHelper.insertPhoneLIST(newname,changenumber)
 
-                            setAdapter(context)
-                        }
-                        DialogInterface.BUTTON_NEGATIVE -> null
+                        setAdapter(context)
                     }
+                    DialogInterface.BUTTON_NEGATIVE -> null
                 }
             }
             builder.setPositiveButton("추가하기",listener)
@@ -86,19 +85,17 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
                 var builder = AlertDialog.Builder(context)
                 builder.setTitle("전화번호부를 삭제")
                 builder.setMessage("삭제하시겠습니까?")
-                var listner = object : DialogInterface.OnClickListener{
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
-                        when(p1){
-                            DialogInterface.BUTTON_POSITIVE -> {
-                                helper.deletePhoneItem(viewHolder.itemView.phone_name.text.toString())  //대충 여기만드는중
-                                val adapter1 = PhoneBookAdapter()
-                                adapter1.listData.addAll(helper.getPhoneBookLIST())
+                var listner = DialogInterface.OnClickListener { _, p1 ->
+                    when(p1){
+                        DialogInterface.BUTTON_POSITIVE -> {
+                            helper.deletePhoneItem(viewHolder.itemView.phone_name.text.toString())  //대충 여기만드는중
+                            val adapter1 = PhoneBookAdapter()
+                            adapter1.listData.addAll(helper.getPhoneBookLIST())
 
-                                phonebook_recyclerview.adapter = adapter1
-                            }
-                            DialogInterface.BUTTON_NEGATIVE -> {
-                                phonebook_recyclerview.adapter = adapter
-                            }
+                            phonebook_recyclerview.adapter = adapter1
+                        }
+                        DialogInterface.BUTTON_NEGATIVE -> {
+                            phonebook_recyclerview.adapter = adapter
                         }
                     }
                 }

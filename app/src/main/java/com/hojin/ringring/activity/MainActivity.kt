@@ -44,23 +44,6 @@ class MainActivity : AppCompatActivity() {
 
         if (!checkPermissions()) {//요청할 것이 있으면
             requestPermissions()
-            /*val builder1 = AlertDialog.Builder(this)
-            builder1.setTitle("어플 동작을 위한 권한요청")
-            builder1.setMessage("수락을 해주셔야지 어플이 동작해요...")
-            val listner1 = DialogInterface.OnClickListener { _, p1 ->
-                when (p1) {
-                    DialogInterface.BUTTON_POSITIVE -> {
-                        requestPermissions()
-                    }
-                    DialogInterface.BUTTON_NEGATIVE -> {
-                        Toast.makeText(applicationContext, "그럼 어쩔수없죠... Bye....", Toast.LENGTH_LONG).show()
-                        finish()
-                    }
-                }
-            }
-            builder1.setPositiveButton("좋아요", listner1)
-            builder1.setNegativeButton("싫어요", listner1)
-            builder1.show()*/
         }
 
         //방해금지모드 빼곤 다 획득!
@@ -85,7 +68,6 @@ class MainActivity : AppCompatActivity() {
             builder2.show()
         }
 
-
         //권한 전부다 획득!
         val dbHelper = DBHelper(this)
         val status = dbHelper.getStatus()
@@ -100,12 +82,12 @@ class MainActivity : AppCompatActivity() {
         switch_service.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {//ON
                 startForegroundService(Intent(this, RingService::class.java))
-                Toast.makeText(applicationContext, "서비스 시작", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(applicationContext, "서비스 시작", Toast.LENGTH_SHORT).show()
                 dbHelper.SettingStatus("ON")
                 btn_timer.visibility = View.VISIBLE
             } else {//OFF
                 stopService(Intent(this, RingService::class.java))
-                Toast.makeText(applicationContext, "서비스 종료", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(applicationContext, "서비스 종료", Toast.LENGTH_SHORT).show()
                 dbHelper.SettingStatus("OFF")
                 btn_timer.visibility = View.GONE
             }
@@ -189,8 +171,6 @@ class MainActivity : AppCompatActivity() {
         //필요한 퍼미션들을 하나씩 끄집어내서 현재 권한을 받았는지 체크
         for (permission in requiredPermissions) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                //만약 권한이 없다면 rejectedPermissionList에 추가
-                Log.d("PERMISsion",permission)
                 rejectedPermissionList.add(permission)
                 isClear = false
             }
@@ -221,6 +201,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

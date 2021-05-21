@@ -15,7 +15,6 @@ import java.util.*
 class RingService : Service() {
     private var mReceiver: ScreenReceiver? = null
 
-
     val channelId = "com.suw.lockscreen"
     val channelName = "My service channel"
     override fun onBind(intent: Intent): IBinder? {
@@ -34,18 +33,15 @@ class RingService : Service() {
         super.onStartCommand(intent, flags, startId)
         initializeNotification(intent)
         registerRestartAlarm(true)
-        //Toast.makeText(applicationContext,"RingService onStartCommand", Toast.LENGTH_SHORT).show()
         return START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
         super.onDestroy()
         registerRestartAlarm(true)
-        //Toast.makeText(applicationContext,"RingService onDestroy", Toast.LENGTH_SHORT).show()
     }
 
     fun registerRestartAlarm(isOn:Boolean){
-        //Toast.makeText(applicationContext,"RingService registerRestartAlarm", Toast.LENGTH_SHORT).show()
         val intent: Intent = Intent(this,
             RestartReceiver::class.java)
         val sender: PendingIntent = PendingIntent.getBroadcast(this,0,intent,0)
@@ -58,7 +54,6 @@ class RingService : Service() {
         }
     }
     fun initializeNotification(intent: Intent){
-        //Toast.makeText(applicationContext,"RingService initializeNotification", Toast.LENGTH_SHORT).show()
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this,0,intent,0)
         if (Build.VERSION.SDK_INT >= 26) {
             val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
@@ -67,8 +62,8 @@ class RingService : Service() {
         }
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("title")
-            .setContentText("content text")
+            .setContentTitle("Working!!")
+            .setContentText("서비스가 정상 작동중입니다.")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_CALL)
             .setFullScreenIntent(pendingIntent, true)
@@ -78,7 +73,6 @@ class RingService : Service() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        //Toast.makeText(applicationContext,"RingService onTaskRemoved", Toast.LENGTH_SHORT).show()
         super.onTaskRemoved(rootIntent)
 
         var calendar: Calendar = Calendar.getInstance()

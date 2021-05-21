@@ -2,7 +2,6 @@ package com.hojin.ringring.PhoneBook
 
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
@@ -14,10 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.hojin.ringring.R
-import com.hojin.ringring.activity.MainActivity
 import com.hojin.ringring.util.DBHelper
 import kotlinx.android.synthetic.main.activity_phone_book.*
-import kotlinx.android.synthetic.main.floating_dialog.*
 import kotlinx.android.synthetic.main.floating_dialog.view.*
 import kotlinx.android.synthetic.main.item_phonebooklist.view.*
 

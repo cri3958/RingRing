@@ -38,22 +38,13 @@ class MainActivity : AppCompatActivity() {
     )
     var rejectedPermissionList = ArrayList<String>()
 
-    override fun onResume() {
-        super.onResume()
-        //여기서도 퍼미션 검사해야됨
-    }
-
-    override fun onRestart() {
-        super.onRestart()
-        //여기서도 퍼미션 검사해야됨
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         if (!checkPermissions()) {//요청할 것이 있으면
-            val builder1 = AlertDialog.Builder(this)
+            requestPermissions()
+            /*val builder1 = AlertDialog.Builder(this)
             builder1.setTitle("어플 동작을 위한 권한요청")
             builder1.setMessage("수락을 해주셔야지 어플이 동작해요...")
             val listner1 = DialogInterface.OnClickListener { _, p1 ->
@@ -69,16 +60,15 @@ class MainActivity : AppCompatActivity() {
             }
             builder1.setPositiveButton("좋아요", listner1)
             builder1.setNegativeButton("싫어요", listner1)
-            builder1.show()
+            builder1.show()*/
         }
 
         //방해금지모드 빼곤 다 획득!
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager//방해금지모드 퍼미션
         if (!notificationManager.isNotificationPolicyAccessGranted) {
             val builder2 = AlertDialog.Builder(this)
-            builder2.setTitle("이 친구도...")
-            builder2.setMessage(resources.getString(R.string.app_name) + "의 방해 금지 모드도 허가해주세용...")
-            val listner2 = DialogInterface.OnClickListener { _, p1 ->
+            builder2.setMessage("어플 동작을 위한 권한요청")
+            val listner = DialogInterface.OnClickListener { _, p1 ->
                 when (p1) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         val intent = Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
@@ -90,8 +80,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            builder2.setPositiveButton("좋아요", listner2)
-            builder2.setNegativeButton("싫어요", listner2)
+            builder2.setPositiveButton("좋아요", listner)
+            builder2.setNegativeButton("싫어요", listner)
             builder2.show()
         }
 

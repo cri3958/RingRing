@@ -34,6 +34,17 @@
         android:gravity="center"
         android:background="@drawable/btn_background"/>
 
+    <ImageView
+        android:id="@+id/btn_itemdelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:foregroundGravity="center"
+        app:layout_constraintBottom_toTopOf="@id/phonebook_recyclerview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btn_resetDB"
+        app:srcCompat="@drawable/ic_action_delete" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/phonebook_recyclerview"
         android:layout_width="match_parent"
@@ -41,20 +52,12 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_resetDB"
-        app:layout_constraintBottom_toTopOf="@+id/marginitem"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_layout"
         tools:listitem="@layout/item_phonebooklist"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp">
 
     </androidx.recyclerview.widget.RecyclerView>
-
-    <TextView
-        android:id="@+id/marginitem"
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:text=""
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingbtn_addphonelist"
@@ -68,6 +71,54 @@
         app:fabSize="auto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/item_border">
+
+        <TextView
+            android:id="@+id/bottom_text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="총 : "
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            app:layout_constraintTop_toTopOf="@id/phone_countbook"
+            app:layout_constraintEnd_toStartOf="@id/phone_countbook"
+            app:layout_constraintBottom_toBottomOf="@id/phone_countbook"/>
+
+        <TextView
+            android:id="@+id/phone_countbook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <TextView
+            android:id="@+id/bottom_text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" 개"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            app:layout_constraintTop_toTopOf="@id/phone_countbook"
+            app:layout_constraintStart_toEndOf="@id/phone_countbook"
+            app:layout_constraintBottom_toBottomOf="@id/phone_countbook"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

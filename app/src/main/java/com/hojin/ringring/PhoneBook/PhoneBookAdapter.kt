@@ -1,15 +1,25 @@
 package com.hojin.ringring.PhoneBook
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hojin.ringring.R
 import com.hojin.ringring.model.Phone
+import com.hojin.ringring.util.DBHelper
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_phonebooklist.view.*
 
+
 class PhoneBookAdapter : RecyclerView. Adapter<RecyclerView.ViewHolder>(){
-    var listData = mutableListOf<Phone>()
+    var mcontext: Context? = null
+    var listData = ArrayList<Phone>()
+
+    fun setContext(context: Context){
+        this.mcontext = context
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_phonebooklist,parent,false)
@@ -21,17 +31,21 @@ class PhoneBookAdapter : RecyclerView. Adapter<RecyclerView.ViewHolder>(){
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val phone = listData.get(position)
-        holder.itemView.phone_dbnum.text = phone.getId().toString()
+        val dbHelper = DBHelper(mcontext!!.applicationContext)
+        val phone = listData[position]
+        holder.itemView.phone_dbnum.text = (position+1).toString()
         holder.itemView.phone_name.text = phone.getName()
         holder.itemView.phone_number.text = phone.getNumber()
-        holder.itemView.phone_checkbox.setOnClickListener {
-            if(holder.itemView.phone_checkbox.isChecked){
-                //어딘가에저장
-            }else{
-                //저장해제
+        holder.itemView.phone_switch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {//ON
+                phone.setUsing("true")
+                dbHelper.updateUsingPhoneItem(phone)
+            } else {//OFF
+                phone.setUsing("false")
+                dbHelper.updateUsingPhoneItem(phone)
             }
-        }//>>이걸 어떻게 저렇게 PhoneBookActivity로 보내야됨
+        }
+        holder.itemView.phone_switch.isChecked = phone.getUsing() == "true"
     }
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView){}

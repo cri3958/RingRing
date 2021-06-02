@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.hojin.ringring.R
 import com.hojin.ringring.util.DBHelper
+import com.hojin.ringring.util.util
 import kotlinx.android.synthetic.main.activity_phone_book.*
-import kotlinx.android.synthetic.main.activity_phone_book.view.*
 import kotlinx.android.synthetic.main.floating_dialog.view.*
 import kotlinx.android.synthetic.main.item_phonebooklist.view.*
 
@@ -27,8 +27,11 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
         setContentView(R.layout.activity_phone_book)
 
         val dbHelper = DBHelper(context)
+        val util = util()
 
         setAdapter(context)
+
+        phone_countbook.text = dbHelper.getCountBookList().toString()
 
         btn_back.setOnClickListener {
             finish()
@@ -37,26 +40,28 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
         btn_resetDB.setOnClickListener {
             callPhoneBook()
             setAdapter(context)
+            phone_countbook.text = dbHelper.getCountBookList().toString()
             Toast.makeText(applicationContext,"전화번호부 불러오기 끝",Toast.LENGTH_SHORT).show()
         }
 
         floatingbtn_addphonelist.setOnClickListener {
-            var builder = AlertDialog.Builder(context)
+            val builder = AlertDialog.Builder(context)
             builder.setTitle("전화번호부 추가하기")
 
-            var v1 = layoutInflater.inflate(R.layout.floating_dialog,null)
+            val v1 = layoutInflater.inflate(R.layout.floating_dialog,null)
             builder.setView(v1)
-            var listener = DialogInterface.OnClickListener { _, p1 ->
+            val listener = DialogInterface.OnClickListener { _, p1 ->
                 when(p1){
                     DialogInterface.BUTTON_POSITIVE -> {
                         val newname : String = v1.dialog_name.text.toString()
                         val newnumber : String = v1.dialog_number.text.toString()
-                        val changenumber = formatNumber(newnumber)
+                        val changenumber = util.formatNumber(newnumber)
 
                         Log.d("@@@@",newname+" / "+changenumber)
-                        dbHelper.insertPhoneLIST(newname,changenumber)
+                        dbHelper.insertPhoneLIST(dbHelper.getCountBookList()+1,newname,changenumber)
 
                         setAdapter(context)
+                        phone_countbook.text = dbHelper.getCountBookList().toString()
                     }
                     DialogInterface.BUTTON_NEGATIVE -> null
                 }
@@ -66,11 +71,16 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
             builder.show()
         }
 
+        btn_itemdelete.setOnClickListener {
+            
+        }
     }
 
     fun setAdapter(context:Context){
         val helper = DBHelper(context)
         val adapter = PhoneBookAdapter()
+
+        adapter.setContext(context)
         adapter.listData.addAll(helper.getPhoneBookLIST())
 
         phonebook_recyclerview.adapter = adapter
@@ -82,28 +92,12 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
             }
 
             override fun onSwiped(viewHolder: ViewHolder, direction: Int) {//4 : 왼쪽으로
-                var builder = AlertDialog.Builder(context)
-                builder.setTitle("전화번호부를 삭제")
-                builder.setMessage("삭제하시겠습니까?")
-                var listner = DialogInterface.OnClickListener { _, p1 ->
-                    when(p1){
-                        DialogInterface.BUTTON_POSITIVE -> {
-                            helper.deletePhoneItem(viewHolder.itemView.phone_name.text.toString())  //대충 여기만드는중
-                            val adapter1 = PhoneBookAdapter()
-                            adapter1.listData.addAll(helper.getPhoneBookLIST())
-
-                            phonebook_recyclerview.adapter = adapter1
-                        }
-                        DialogInterface.BUTTON_NEGATIVE -> {
-                            phonebook_recyclerview.adapter = adapter
-                        }
-                    }
-                }
-                builder.setPositiveButton("네",listner)
-                builder.setNegativeButton("아니오",listner)
-                builder.show()
+                helper.deletePhoneItem(viewHolder.itemView.phone_name.text.toString())
+                val adapter1 = PhoneBookAdapter()
+                adapter1.listData.addAll(helper.getPhoneBookLIST())
+                phonebook_recyclerview.adapter = adapter1
+                phone_countbook.text = helper.getCountBookList().toString()
             }
-
         }
         val itemTouchHelper = ItemTouchHelper(simpleCallback)
         itemTouchHelper.attachToRecyclerView(phonebook_recyclerview)
@@ -113,32 +107,16 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
         val dbHelper: DBHelper = DBHelper(context)
         dbHelper.deletePhoneList()
 
+        var id = 1
         val c = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,null,null,null)
         while(c!!.moveToNext()){
+
             val contactName = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
             val phNumber = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
             if(!dbHelper.isKnownNumber(phNumber)){
-                dbHelper.insertPhoneLIST(contactName,phNumber)
+                dbHelper.insertPhoneLIST(id++,contactName,phNumber)
             }
         }
         c.close()
-    }
-
-    fun formatNumber(number: String): String {  //https://ko.wikipedia.org/wiki/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD%EC%9D%98_%EC%A0%84%ED%99%94%EB%B2%88%ED%98%B8_%EC%B2%B4%EA%B3%84
-        var returnstr:String = "error"
-        val numberarray = number.split("")
-
-        if(number.length == 11) {   //01X-XXXX-XXXX || 031~064-XXXX-XXXX
-            returnstr = numberarray[1]+numberarray[2]+numberarray[3]+"-"+numberarray[4]+numberarray[5]+numberarray[6]+numberarray[7]+"-"+numberarray[8]+numberarray[9]+numberarray[10]+numberarray[11]
-        }else if(number.length == 10){  //02-XXXX-XXXX || 031~064-XXX-XXXX
-            if(numberarray[2].equals("2")){
-                returnstr = numberarray[1]+numberarray[2]+"-"+numberarray[3]+numberarray[4]+numberarray[5]+numberarray[6]+"-"+numberarray[7]+numberarray[8]+numberarray[9]+numberarray[10]
-            }else{
-                returnstr = numberarray[1]+numberarray[2]+numberarray[3]+"-"+numberarray[4]+numberarray[5]+numberarray[6]+"-"+numberarray[7]+numberarray[8]+numberarray[9]+numberarray[10]
-            }
-        } else if(number.length == 9){  //02-XXX-XXXX
-            returnstr = numberarray[1]+numberarray[2]+"-"+numberarray[3]+numberarray[4]+numberarray[5]+"-"+numberarray[6]+numberarray[7]+numberarray[8]+numberarray[9]
-        }
-        return returnstr
     }
 }

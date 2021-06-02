@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class DBHelper (context : Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+class DBHelper(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     companion object{
         private val DB_VERSION = 4
         private val DB_NAME = "RingRing.db"
@@ -19,6 +19,7 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
         private val PHONE_ID = "Id"
         private val PHONE_NAME = "Name"
         private val PHONE_NUMBER = "Number"
+        private val PHONE_ISUSING = "IsUsing"
 
         private val TIMER = "Timer"
         private val RESTARTTIME = "Restarttime"
@@ -36,7 +37,8 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
             ("CREATE TABLE " + PHONELIST + "("
                     + PHONE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + PHONE_NAME + " TEXT,"
-                    + PHONE_NUMBER + " TEXT)")
+                    + PHONE_NUMBER + " TEXT,"
+                    + PHONE_ISUSING + " TEXT)")
 
         val CREATE_TABLE_TIMER =
             ("CREATE TABLE "+TIMER + "("
@@ -75,11 +77,13 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
         onCreate(db)
     }
 
-    fun insertPhoneLIST(name:String,number:String) {
+    fun insertPhoneLIST(id:Int,name:String, number:String) {
         val db = this.writableDatabase
         val contentValues = ContentValues()
+        contentValues.put(PHONE_ID,id)
         contentValues.put(PHONE_NAME, name)
         contentValues.put(PHONE_NUMBER, number)
+        contentValues.put(PHONE_ISUSING, "true")
         db.insert(PHONELIST, null, contentValues)
         db.close()
     }
@@ -92,18 +96,18 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
 
     fun deletePhoneItem(phName:String){
         val db = this.writableDatabase
-        db.delete(PHONELIST, PHONE_NAME+" = ? ", arrayOf(phName))
+        db.delete(PHONELIST, "$PHONE_NAME = ? ", arrayOf(phName))
         db.close()
     }
 
     fun isKnownNumber(phNumber1:String):Boolean{
-        val db = this.readableDatabase //readable로 바꾸어도 되는가???
+        val db = this.readableDatabase
         var isKnownNumber = false
 
         val cursor = db.rawQuery("SELECT * FROM $PHONELIST ORDER BY $PHONE_ID",null)
         while (cursor.moveToNext()){
-            //Log.d("Matching PhoneNumber with ",cursor.getString(cursor.getColumnIndex(PHONE_NUMBER))+" / "+phNumber1)
-           if(phNumber1.equals(cursor.getString(cursor.getColumnIndex(PHONE_NUMBER)))){
+           if(phNumber1 == cursor.getString(cursor.getColumnIndex(PHONE_NUMBER))){
+               Log.d("Matching PhoneNumber with ",cursor.getString(cursor.getColumnIndex(PHONE_NUMBER))+" / "+phNumber1)
                isKnownNumber = true
                return isKnownNumber
            }
@@ -125,6 +129,7 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
             phone.setId(num)
             phone.setName(cursor.getString(cursor.getColumnIndex(PHONE_NAME)))
             phone.setNumber(cursor.getString(cursor.getColumnIndex(PHONE_NUMBER)))
+            phone.setUsing(cursor.getString(cursor.getColumnIndex(PHONE_ISUSING)))
             phonebooklist.add(phone)
             num++
         }
@@ -132,6 +137,26 @@ class DBHelper (context : Context) : SQLiteOpenHelper(context, DB_NAME, null, DB
         db.close()
         return phonebooklist
     }
+
+    fun getCountBookList():Int{
+        val db =this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $PHONELIST ORDER BY $PHONE_NAME",null)
+        return cursor.count
+    }
+
+    fun updateUsingPhoneItem(phone: Phone){
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(PHONE_ID,phone.getId())
+        contentValues.put(PHONE_NAME, phone.getName())
+        contentValues.put(PHONE_NUMBER, phone.getNumber())
+        contentValues.put(PHONE_ISUSING, phone.getUsing())
+        db.update(PHONELIST, contentValues, PHONE_ID + " = " + phone.getId(), null)
+        Log.d("DBHelper","updateUsingPhoneItem! : "+phone.getId())
+        db.close()
+    }
+
+
 
     fun SettingTimer(time:Int){
         val db = this.writableDatabase

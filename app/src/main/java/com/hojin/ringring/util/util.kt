@@ -5,6 +5,9 @@ class util {
         var returnstr:String = "error"
         val numberarray = number.split("")
 
+        if(numberarray[3]=="-" || numberarray[4]=="-")
+            return number
+
         if(number.length == 11) {   //01X-XXXX-XXXX || 031~064-XXXX-XXXX
             returnstr = numberarray[1]+numberarray[2]+numberarray[3]+"-"+numberarray[4]+numberarray[5]+numberarray[6]+numberarray[7]+"-"+numberarray[8]+numberarray[9]+numberarray[10]+numberarray[11]
         }else if(number.length == 10){  //02-XXXX-XXXX || 031~064-XXX-XXXX

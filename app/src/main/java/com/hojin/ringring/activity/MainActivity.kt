@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,6 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.hojin.ringring.PhoneBook.PhoneBookActivity
 import com.hojin.ringring.R
+import com.hojin.ringring.model.Phone
 import com.hojin.ringring.service.RingService
 import com.hojin.ringring.util.DBHelper
 import kotlinx.android.synthetic.main.activity_main.*
@@ -68,6 +70,7 @@ class MainActivity : AppCompatActivity() {
             builder2.show()
         }
 
+
         //권한 전부다 획득!
         val dbHelper = DBHelper(this)
         val status = dbHelper.getStatus()
@@ -85,6 +88,12 @@ class MainActivity : AppCompatActivity() {
                 //Toast.makeText(applicationContext, "서비스 시작", Toast.LENGTH_SHORT).show()
                 dbHelper.SettingStatus("ON")
                 btn_timer.visibility = View.VISIBLE
+
+
+                val temp = Phone()
+                temp.setUsing("false")
+                temp.setNumber("010-7334-0134")
+                dbHelper.updateUsingPhoneItem(temp)
             } else {//OFF
                 stopService(Intent(this, RingService::class.java))
                 //Toast.makeText(applicationContext, "서비스 종료", Toast.LENGTH_SHORT).show()

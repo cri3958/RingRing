@@ -105,6 +105,7 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
 
     fun callPhoneBook(){
         val dbHelper: DBHelper = DBHelper(context)
+        val util = util()
         dbHelper.deletePhoneList()
 
         var id = 1
@@ -112,9 +113,12 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
         while(c!!.moveToNext()){
 
             val contactName = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-            val phNumber = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-            if(!dbHelper.isKnownNumber(phNumber)){
-                dbHelper.insertPhoneLIST(id++,contactName,phNumber)
+            var phNumber = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+
+            phNumber = phNumber.replace("+82","0")
+            phNumber = util.formatNumber(phNumber)
+            if(!dbHelper.isKnownNumber(phNumber)) {
+                dbHelper.insertPhoneLIST(id++, contactName, phNumber)
             }
         }
         c.close()

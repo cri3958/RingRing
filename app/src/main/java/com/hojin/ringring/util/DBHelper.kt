@@ -104,7 +104,7 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_
         val db = this.readableDatabase
         var isKnownNumber = false
 
-        val cursor = db.rawQuery("SELECT * FROM $PHONELIST ORDER BY $PHONE_ID",null)
+        val cursor = db.rawQuery("SELECT * FROM $PHONELIST",null)
         while (cursor.moveToNext()){
            if(phNumber1 == cursor.getString(cursor.getColumnIndex(PHONE_NUMBER))){
                Log.d("Matching PhoneNumber with ",cursor.getString(cursor.getColumnIndex(PHONE_NUMBER))+" / "+phNumber1)
@@ -123,7 +123,7 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_
         val phonebooklist = mutableListOf<Phone>()
         var phone:Phone
         var num = 1
-        val cursor = db.rawQuery("SELECT * FROM $PHONELIST ORDER BY $PHONE_NAME",null)
+        val cursor = db.rawQuery("SELECT * FROM $PHONELIST",null)
         while(cursor.moveToNext()){
             phone = Phone()
             phone.setId(num)
@@ -140,7 +140,7 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_
 
     fun getCountBookList():Int{
         val db =this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $PHONELIST ORDER BY $PHONE_NAME",null)
+        val cursor = db.rawQuery("SELECT * FROM $PHONELIST",null)
         return cursor.count
     }
 
@@ -148,11 +148,12 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(PHONE_ID,phone.getId())
-        contentValues.put(PHONE_NAME, phone.getName())
-        contentValues.put(PHONE_NUMBER, phone.getNumber())
+        contentValues.put(PHONE_NAME,phone.getName())
+        contentValues.put(PHONE_NUMBER,phone.getNumber())
         contentValues.put(PHONE_ISUSING, phone.getUsing())
-        db.update(PHONELIST, contentValues, PHONE_ID + " = " + phone.getId(), null)
-        Log.d("DBHelper","updateUsingPhoneItem! : "+phone.getId())
+
+        db.update(PHONELIST,contentValues, PHONE_ID+" = "+phone.getId(),null)
+
         db.close()
     }
 
@@ -185,9 +186,11 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_
                 Log.d("@@@", now)
                 Log.d("@@@", cursor.getString(cursor.getColumnIndex(RESTARTTIME)))
                 Log.d("isWaitingService","return false")
+                db.close()
                 return true//지금시간이 서비스 재시작 시간보다 과거이다.
             }
         }
+        db.close()
         Log.d("isWaitingService","return true")
         return false//지금시간이 서비스 재시작 시간보다 미래이다.
     }
@@ -198,9 +201,12 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_
 
         while(cursor.moveToNext()) {
             val time = cursor.getString(cursor.getColumnIndex(RESTARTTIME))
-            if (time != null)
+            if (time != null) {
+                db.close()
                 return time
+            }
         }
+        db.close()
         return "error"
     }
 
@@ -222,9 +228,12 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_
 
         while (cursor.moveToNext()) {
             val isRunning = cursor.getString(cursor.getColumnIndex(ISRUNNING))
-            if (isRunning == "ON" || isRunning == "OFF")
+            if (isRunning == "ON" || isRunning == "OFF") {
+                db.close()
                 return isRunning
+            }
         }
+        db.close()
         return "error"  //db에 status가 저장이 안되어있었다면? == 어플 처음 실행할때
     }
 
@@ -249,21 +258,24 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_
         val db = this.readableDatabase
 
         val cursor = db.rawQuery("SELECT * FROm $LATESTCALL",null)
-        while(cursor.moveToNext()){
-            val temptime = System.currentTimeMillis()  - 300000 //지금보다 5분전
+        while(cursor.moveToNext()) {
+            val temptime = System.currentTimeMillis() - 300000 //지금보다 5분전
             val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm")
             val five_minutes_ago = dateFormat.format(Date(temptime))
 
             val LatestCall_number = cursor.getString(cursor.getColumnIndex(LATESTCALL_NUMBER))
             val LatestCall_time = cursor.getString(cursor.getColumnIndex(LATESTCALL_TIME))
 
-            Log.d("@@@@",LatestCall_number)
-            Log.d("@@@@",number)
-            Log.d("@@@@",five_minutes_ago)
-            Log.d("@@@@",LatestCall_time)
-            if(LatestCall_number == number && five_minutes_ago < LatestCall_time)//5분내로 같은 번호로 전화가 온적이 있다.
+            Log.d("@@@@", LatestCall_number)
+            Log.d("@@@@", number)
+            Log.d("@@@@", five_minutes_ago)
+            Log.d("@@@@", LatestCall_time)
+            if (LatestCall_number == number && five_minutes_ago < LatestCall_time) {//5분내로 같은 번호로 전화가 온적이 있다.
+                db.close()
                 return true
+            }
         }
+        db.close()
         return false
     }
 }

@@ -31,11 +31,14 @@ class PhoneBookAdapter : RecyclerView. Adapter<RecyclerView.ViewHolder>(){
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val dbHelper = DBHelper(mcontext!!.applicationContext)
+        val dbHelper = DBHelper(mcontext)
+
         val phone = listData[position]
         holder.itemView.phone_dbnum.text = (position+1).toString()
         holder.itemView.phone_name.text = phone.getName()
         holder.itemView.phone_number.text = phone.getNumber()
+        if(phone.getUsing() == "true")
+            holder.itemView.phone_switch.isChecked = true
         holder.itemView.phone_switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {//ON
                 phone.setUsing("true")
@@ -45,7 +48,6 @@ class PhoneBookAdapter : RecyclerView. Adapter<RecyclerView.ViewHolder>(){
                 dbHelper.updateUsingPhoneItem(phone)
             }
         }
-        holder.itemView.phone_switch.isChecked = phone.getUsing() == "true"
     }
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView){}

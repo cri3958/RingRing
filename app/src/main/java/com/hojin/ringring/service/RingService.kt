@@ -77,7 +77,7 @@ class RingService : Service() {
 
         var calendar: Calendar = Calendar.getInstance()
         calendar.setTimeInMillis(System.currentTimeMillis())
-        calendar.add(Calendar.SECOND,5)
+        calendar.add(Calendar.SECOND,30)
 
         val intent: Intent = Intent(this, CallReceiver::class.java)
         val sender: PendingIntent = PendingIntent.getBroadcast(this,0,intent,0)

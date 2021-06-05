@@ -4,9 +4,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.hojin.ringring.util.DBHelper
 
 class RestartReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        val dbHelper = DBHelper(context)
+        if(dbHelper.getStatus() != "ON")
+            return
+
         val ACTION_AUTOSTART_SERVICE:String = "android.intent.action.BOOT_COMPLETED"
 
         val action = intent.getAction()

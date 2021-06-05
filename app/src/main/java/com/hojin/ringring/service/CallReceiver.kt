@@ -14,6 +14,9 @@ import com.hojin.ringring.util.util
 class CallReceiver : BroadcastReceiver(){
     private var PhoneState:String? = null
     override fun onReceive(context: Context, intent: Intent) {
+        val dbHelper = DBHelper(context)
+        if(dbHelper.getStatus() != "ON")
+            return
 
         val util = util()
 

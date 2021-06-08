@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -23,6 +22,7 @@ import com.hojin.ringring.model.Phone
 import com.hojin.ringring.service.RingService
 import com.hojin.ringring.util.DBHelper
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_phone_book.*
 import kotlinx.android.synthetic.main.dialog_timer.view.*
 import java.util.*
 
@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         Manifest.permission.ACCESS_NOTIFICATION_POLICY
     )
     var rejectedPermissionList = ArrayList<String>()
+    val dbHelper = DBHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +52,8 @@ class MainActivity : AppCompatActivity() {
         //방해금지모드 빼곤 다 획득!
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager//방해금지모드 퍼미션
         if (!notificationManager.isNotificationPolicyAccessGranted) {
-            val builder2 = AlertDialog.Builder(this)
-            builder2.setMessage("어플 동작을 위한 권한요청")
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("어플 동작을 위한 권한요청")
             val listner = DialogInterface.OnClickListener { _, p1 ->
                 when (p1) {
                     DialogInterface.BUTTON_POSITIVE -> {
@@ -65,14 +66,13 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            builder2.setPositiveButton("좋아요", listner)
-            builder2.setNegativeButton("싫어요", listner)
-            builder2.show()
+            builder.setPositiveButton("좋아요", listner)
+            builder.setNegativeButton("싫어요", listner)
+            builder.show()
         }
 
 
         //권한 전부다 획득!
-        val dbHelper = DBHelper(this)
         val status = dbHelper.getStatus()
         if (status == "ON") {//이미 서비스 중이다
             startForegroundService(Intent(this, RingService::class.java))
@@ -82,13 +82,17 @@ class MainActivity : AppCompatActivity() {
             dbHelper.SettingStatus("OFF")
         }
 
+        UIIntraction()
+        Settingbtntimertext()
+
+    }
+
+    private fun UIIntraction(){
         switch_service.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {//ON
                 startForegroundService(Intent(this, RingService::class.java))
-                //Toast.makeText(applicationContext, "서비스 시작", Toast.LENGTH_SHORT).show()
                 dbHelper.SettingStatus("ON")
                 btn_timer.visibility = View.VISIBLE
-
 
                 val temp = Phone()
                 temp.setUsing("false")
@@ -96,7 +100,6 @@ class MainActivity : AppCompatActivity() {
                 dbHelper.updateUsingPhoneItem(temp)
             } else {//OFF
                 stopService(Intent(this, RingService::class.java))
-                //Toast.makeText(applicationContext, "서비스 종료", Toast.LENGTH_SHORT).show()
                 dbHelper.SettingStatus("OFF")
                 btn_timer.visibility = View.GONE
             }
@@ -108,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             else {
                 Toast.makeText(applicationContext, "서비스 대기 취소", Toast.LENGTH_SHORT).show()
                 dbHelper.SettingTimer(-1)
-                Settingbtntext()
+                Settingbtntimertext()
             }
         }
 
@@ -117,8 +120,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        Settingbtntext()
-
+        btn_help.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("어플 처음 시작 한다면 ${getString(R.string.btn_getfriend)}에서 ${getString(R.string.btn_resetDB)}를 한번 클릭 후 서비스를 시작하면 정상 작동 됩니다!")
+            builder.setPositiveButton("확인", null)
+            builder.show()
+        }
     }
 
     private fun dialog(context: Context){   //서비스 대기용 dialog 생성 함수
@@ -154,8 +161,8 @@ class MainActivity : AppCompatActivity() {
             }
             Toast.makeText(context, time.toString() + "분동안 서비스 대기", Toast.LENGTH_SHORT).show()//이 시간을 btn_time에다가 대체해주면 좋을것도 같은..?
             val dbHelper = DBHelper(this)
-            dbHelper.SettingTimer(time)
-            Settingbtntext()
+            dbHelper.SettingTimer(time*60000)
+            Settingbtntimertext()
         }
         builder.setNegativeButton("취소",null)
         builder.setCancelable(false)
@@ -163,7 +170,7 @@ class MainActivity : AppCompatActivity() {
         builder.show()
     }
 
-    private fun Settingbtntext(){   //서비스 대기시 서비스대기버튼의 text 수정
+    private fun Settingbtntimertext(){   //서비스 대기시 서비스대기버튼의 text 수정
         val dbHelper = DBHelper(this)
         if(dbHelper.isWaitingService()){//지금이 서비스 대기중이다.
             val text = dbHelper.getTimer()

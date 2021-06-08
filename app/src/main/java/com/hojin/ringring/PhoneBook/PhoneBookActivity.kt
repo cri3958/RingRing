@@ -22,15 +22,17 @@ import kotlinx.android.synthetic.main.item_phonebooklist.view.*
 
 class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.com/entry/Android-Kotlin-%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C-%EC%BD%94%ED%8B%80%EB%A6%B0-%EB%8B%A4%EC%9D%B4%EC%96%BC%EB%A1%9C%EA%B7%B8-Dialog
     val context:Context = this
+    val dbHelper = DBHelper(context)
+    val util = util()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_phone_book)
 
-        val dbHelper = DBHelper(context)
-        val util = util()
-
         setAdapter(context)
+        UIInteraction()
+    }
 
+    fun UIInteraction(){
         phone_countbook.text = dbHelper.getCountBookList().toString()
 
         btn_back.setOnClickListener {
@@ -71,8 +73,9 @@ class PhoneBookActivity : AppCompatActivity() { //https://sbe03005dev.tistory.co
             builder.show()
         }
 
-        btn_itemdelete.setOnClickListener {
-            
+        btn_deleteallitem.setOnClickListener {
+            dbHelper.deletePhoneList()
+            setAdapter(context)
         }
     }
 

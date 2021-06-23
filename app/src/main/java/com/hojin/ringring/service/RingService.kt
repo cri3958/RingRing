@@ -53,15 +53,15 @@ class RingService : Service() {
             alarmManager.cancel(sender)
         }
     }
-    fun initializeNotification(intent: Intent){
+    fun initializeNotification(intent: Intent){//?
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this,0,intent,0)
-        if (Build.VERSION.SDK_INT >= 26) {
+
             val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
             var manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
-        }
+
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.app_icon)
             .setContentTitle("Working!!")
             .setContentText("서비스가 정상 작동중입니다.")
             .setPriority(NotificationCompat.PRIORITY_HIGH)

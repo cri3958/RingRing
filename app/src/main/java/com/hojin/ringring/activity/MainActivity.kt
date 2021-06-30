@@ -21,6 +21,7 @@ import com.hojin.ringring.R
 import com.hojin.ringring.model.Phone
 import com.hojin.ringring.service.RingService
 import com.hojin.ringring.util.DBHelper
+import com.hojin.ringring.util.util
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_phone_book.*
 import kotlinx.android.synthetic.main.dialog_timer.view.*
@@ -30,13 +31,9 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     private val multiplePermissionsCode = 100
     private val requiredPermissions = arrayOf(
-        Manifest.permission.READ_CONTACTS,
-        Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.READ_CALL_LOG,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.FOREGROUND_SERVICE,
-        Manifest.permission.RECEIVE_BOOT_COMPLETED,
-        Manifest.permission.ACCESS_NOTIFICATION_POLICY
+        Manifest.permission.READ_CONTACTS,  //연락처
+        Manifest.permission.READ_PHONE_STATE,   //전화
+        Manifest.permission.READ_CALL_LOG  //통화기록
     )
     var rejectedPermissionList = ArrayList<String>()
     val dbHelper = DBHelper(this)
@@ -70,7 +67,6 @@ class MainActivity : AppCompatActivity() {
             builder.setNegativeButton("싫어요", listner)
             builder.show()
         }
-
 
         //권한 전부다 획득!
         val status = dbHelper.getStatus()
@@ -208,9 +204,8 @@ class MainActivity : AppCompatActivity() {
                 if(grantResults.isNotEmpty()) {
                     for((i, permission) in permissions.withIndex()) {
                         if(grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                            //권한 획득 실패
-                            Log.i("TAG", "The user has denied to $permission")
-                            Log.i("TAG", "I can't work for you anymore then. ByeBye!")
+                            Toast.makeText(this,"권한 거부로 어플 사용 불가",Toast.LENGTH_SHORT).show()
+                            finish()
                         }
                     }
                 }

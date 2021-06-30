@@ -12,7 +12,7 @@ import com.hojin.ringring.util.DBHelper
 import com.hojin.ringring.util.util
 
 class CallReceiver : BroadcastReceiver(){
-    private var PhoneState:String? = null
+    private lateinit var PhoneState:String
     override fun onReceive(context: Context, intent: Intent) {
         val dbHelper = DBHelper(context)
         if(dbHelper.getStatus() != "ON")
@@ -20,13 +20,13 @@ class CallReceiver : BroadcastReceiver(){
 
         val util = util()
 
-        val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
-        if(state.equals(PhoneState))
+        val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE).toString()
+        if(state == PhoneState)
             return
         else
             PhoneState = state
 
-        if(TelephonyManager.EXTRA_STATE_RINGING.equals(state)){
+        if(TelephonyManager.EXTRA_STATE_RINGING == state){
             val incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)  //일단은 임마가 문제
             if(incomingNumber.isNullOrEmpty())
                 return
@@ -44,14 +44,8 @@ class CallReceiver : BroadcastReceiver(){
                 else
                     dbHelper.SettingLatestCall(phone_number)
             }
-
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                val intent:Intent = Intent(context, RingService::class.java)
-                context.startForegroundService(intent)
-            } else{
-                val intent:Intent = Intent(context, RingService::class.java)
-                context.startService(intent)
-            }
+            val intent:Intent = Intent(context, RingService::class.java)
+            context.startForegroundService(intent)
         }
     }
 

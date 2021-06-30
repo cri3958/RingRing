@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_phonebooklist.view.*
 
 
 class PhoneBookAdapter : RecyclerView. Adapter<RecyclerView.ViewHolder>(){
-    var mcontext: Context? = null
+    lateinit var mcontext: Context
     var listData = ArrayList<Phone>()
 
     fun setContext(context: Context){

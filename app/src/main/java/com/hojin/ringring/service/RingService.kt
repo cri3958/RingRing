@@ -4,7 +4,6 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.os.IBinder
 import android.os.SystemClock
 import android.widget.Toast
@@ -13,7 +12,7 @@ import com.hojin.ringring.R
 import java.util.*
 
 class RingService : Service() {
-    private var mReceiver: ScreenReceiver? = null
+    private lateinit var mReceiver: CallReceiver
 
     val channelId = "com.suw.lockscreen"
     val channelName = "My service channel"
@@ -23,7 +22,7 @@ class RingService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        mReceiver = ScreenReceiver()
+        mReceiver = CallReceiver()
         val filter = IntentFilter(Intent.ACTION_SCREEN_OFF)
         registerReceiver(mReceiver, filter)
         Toast.makeText(applicationContext,"RingRing 서비스 시작", Toast.LENGTH_SHORT).show()
@@ -57,7 +56,7 @@ class RingService : Service() {
         val pendingIntent: PendingIntent = PendingIntent.getActivity(this,0,intent,0)
 
             val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-            var manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
@@ -75,7 +74,7 @@ class RingService : Service() {
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
 
-        var calendar: Calendar = Calendar.getInstance()
+        val calendar: Calendar = Calendar.getInstance()
         calendar.setTimeInMillis(System.currentTimeMillis())
         calendar.add(Calendar.SECOND,30)
 

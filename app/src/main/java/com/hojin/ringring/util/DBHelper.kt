@@ -157,14 +157,12 @@ class DBHelper(context: Context?) : SQLiteOpenHelper(context, DB_NAME, null, DB_
         db.close()
     }
 
-
-
     fun SettingTimer(time:Int){
         val db = this.writableDatabase
 
         db.delete(TIMER,null,null)
 
-        val temptime = System.currentTimeMillis() + (time*60000)
+        val temptime = System.currentTimeMillis() + (time)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm")
         val restarttime = dateFormat.format(Date(temptime))
 

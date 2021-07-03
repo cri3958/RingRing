@@ -20,7 +20,7 @@
             android:id="@+id/main_text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="서비스 상태"
+            android:text="@string/main_text1"
             android:textSize="25dp"
             android:textStyle="bold"
             android:textColor="#000000"
@@ -97,7 +97,7 @@
                 android:textStyle="bold"
                 android:layout_marginStart="5dp"
                 android:gravity="center"
-                android:text="서비스 잠시 멈추기" />
+                android:text="@string/btn_timer_text" />
         </LinearLayout>
 
         <TextView
@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="전화번호부 목록 확인하기"
+            android:text="@string/btn_getfriend"
             android:textSize="25sp"
             android:textColor="#000000"
             android:padding="10dp"
@@ -116,7 +116,17 @@
             app:layout_constraintTop_toBottomOf="@id/btn_timer"
             android:background="@drawable/btn_background"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/btn_help"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:srcCompat="@drawable/ic_action_help"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="10dp"
+        android:scaleType="fitCenter"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

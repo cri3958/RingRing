@@ -14,8 +14,8 @@ class AutoStartReceiver : BroadcastReceiver() {
             return
 
         val ACTION_AUTOSTART_SERVICE: String = "android.intent.action.BOOT_COMPLETED"
-        val action = intent.getAction()
-        if (action.equals(ACTION_AUTOSTART_SERVICE)) {
+        val action = intent.action.toString()
+        if (action == ACTION_AUTOSTART_SERVICE) {
             val intent: Intent = Intent(context.applicationContext, RingService::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startForegroundService(intent)

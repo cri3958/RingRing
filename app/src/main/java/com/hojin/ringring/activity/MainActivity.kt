@@ -32,8 +32,9 @@ class MainActivity : AppCompatActivity() {
     private val multiplePermissionsCode = 100
     private val requiredPermissions = arrayOf(
         Manifest.permission.READ_CONTACTS,  //연락처
-        Manifest.permission.READ_PHONE_STATE,   //전화
-        Manifest.permission.READ_CALL_LOG  //통화기록
+        Manifest.permission.READ_PHONE_STATE  //전화
+        //Manifest.permission.READ_PHONE_NUMBERS,   //전화
+        //Manifest.permission.READ_CALL_LOG  //통화기록
     )
     var rejectedPermissionList = ArrayList<String>()
     val dbHelper = DBHelper(this)
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager//방해금지모드 퍼미션
         if (!notificationManager.isNotificationPolicyAccessGranted) {
             val builder = AlertDialog.Builder(this)
-            builder.setMessage("어플 동작을 위한 권한요청")
+            builder.setMessage("어플 동작을 위한 권한요청")//허용방법 좀더 설명해보기
             val listner = DialogInterface.OnClickListener { _, p1 ->
                 when (p1) {
                     DialogInterface.BUTTON_POSITIVE -> {

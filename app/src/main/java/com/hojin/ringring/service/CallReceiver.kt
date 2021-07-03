@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
-import android.os.Build
+import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.Toast
@@ -12,27 +12,37 @@ import com.hojin.ringring.util.DBHelper
 import com.hojin.ringring.util.util
 
 class CallReceiver : BroadcastReceiver(){
-    private lateinit var PhoneState:String
+    private var PhoneState: String? = null
     override fun onReceive(context: Context, intent: Intent) {
-        val dbHelper = DBHelper(context)
-        if(dbHelper.getStatus() != "ON")
-            return
-
-        val util = util()
 
         val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE).toString()
         if(state == PhoneState)
             return
         else
             PhoneState = state
-
+        Log.d("CallReceiver","REEEEEEEEEEEEEEEEECIVE 1 $state")
         if(TelephonyManager.EXTRA_STATE_RINGING == state){
+            val phoneStateListener = object  : PhoneStateListener(){
+                override fun onCallStateChanged(state: Int, phoneNumber: String?) {
+                    super.onCallStateChanged(state, phoneNumber)
+
+                }
+            }
+
+
+
             val incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)  //일단은 임마가 문제
-            if(incomingNumber.isNullOrEmpty())
+            if(incomingNumber.isNullOrEmpty()) {
+                Log.d("CallReceiver","REEEEEEEEEEEEEEEEECIVE 2 return ${incomingNumber.toString()}")
                 return
+            }
+            val util = util()
             val phone_number = util.formatNumber(incomingNumber.toString())
 
             val dbHelper = DBHelper(context)
+
+            if(dbHelper.getStatus() != "ON")
+                return
 
             if(dbHelper.isKnownNumber(phone_number)){
                 changetoRingmode(context)

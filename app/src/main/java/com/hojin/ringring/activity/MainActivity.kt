@@ -8,6 +8,8 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -81,7 +83,6 @@ class MainActivity : AppCompatActivity() {
 
         UIIntraction()
         Settingbtntimertext()
-
     }
 
     private fun UIIntraction(){

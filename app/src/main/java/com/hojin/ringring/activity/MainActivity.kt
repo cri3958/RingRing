@@ -47,6 +47,9 @@ class MainActivity : AppCompatActivity() {
 
         if (!checkPermissions()) {//요청할 것이 있으면
             requestPermissions()
+
+
+
         }
 
         //방해금지모드 빼곤 다 획득!

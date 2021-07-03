@@ -8,6 +8,8 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.telephony.PhoneStateListener
+import android.telephony.TelephonyManager
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -45,6 +47,9 @@ class MainActivity : AppCompatActivity() {
 
         if (!checkPermissions()) {//요청할 것이 있으면
             requestPermissions()
+
+
+
         }
 
         //방해금지모드 빼곤 다 획득!
@@ -81,7 +86,6 @@ class MainActivity : AppCompatActivity() {
 
         UIIntraction()
         Settingbtntimertext()
-
     }
 
     private fun UIIntraction(){

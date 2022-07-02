@@ -20,11 +20,9 @@ class CallReceiver : BroadcastReceiver() {
             return
         else
             PhoneState = state
-        Log.d("CallReceiver", "REEEEEEEEEEEEEEEEECIVE 1 $state")
         if (TelephonyManager.EXTRA_STATE_RINGING == state) {
             val incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)  //일단은 임마가 문제
             if (incomingNumber.isNullOrEmpty()) {
-                Log.d("CallReceiver", "REEEEEEEEEEEEEEEEECIVE 2 return ${incomingNumber.toString()}")
                 return
             }
             val util = util()
@@ -39,7 +37,6 @@ class CallReceiver : BroadcastReceiver() {
                 changetoRingmode(context)
             } else {//모르는 번호여도 5분내로 2번오면 소리로    >>>테스트는 아직
                 if (dbHelper.compareLatestCall(phone_number)) {
-                    Log.d("CallReceiver", "모르지만 5분내로 2번 전화옴")
                     changetoRingmode(context)
                 } else
                     dbHelper.SettingLatestCall(phone_number)

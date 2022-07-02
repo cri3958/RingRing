@@ -34,9 +34,9 @@ class MainActivity : AppCompatActivity() {
     private val multiplePermissionsCode = 100
     private val requiredPermissions = arrayOf(
         Manifest.permission.READ_CONTACTS,  //연락처
-        Manifest.permission.READ_PHONE_STATE  //전화
+        Manifest.permission.READ_PHONE_STATE,  //전화
         //Manifest.permission.READ_PHONE_NUMBERS,   //전화
-        //Manifest.permission.READ_CALL_LOG  //통화기록
+        Manifest.permission.READ_CALL_LOG  //통화기록
     )
     var rejectedPermissionList = ArrayList<String>()
     val dbHelper = DBHelper(this)
@@ -47,9 +47,6 @@ class MainActivity : AppCompatActivity() {
 
         if (!checkPermissions()) {//요청할 것이 있으면
             requestPermissions()
-
-
-
         }
 
         //방해금지모드 빼곤 다 획득!
